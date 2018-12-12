@@ -1,0 +1,45 @@
+"""Commands"""
+
+python retrain.py \
+    --image_dir swimcat \
+    --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/2
+
+
+python3 retrain.py     --image_dir data/swimcat     --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/2
+
+tensorboard --logdir /tmp/retrain_logs
+
+export TFHUB_CACHE_DIR=/my_module_cache
+
+python3 retrain.py \
+	--image_dir="data/category" \
+	--output_graph="trained_model/final_model.pb" \
+	--intermediate_output_graphs_dir="trained_model/int_model" \
+	--intermediate_store_frequency=1000 \
+	--output_labels="trained_model/final_label.pbtxt" \
+	--summaries_dir="trained_model/retrain_logs" \
+	--train_batch_size=8 \
+	--random_crop=1 \
+	--random_scale=1 \
+	--random_brightness=1 \
+	--bottleneck_dir="data/bottleneck" \ 
+	--learning_rate=0.0005 \
+	--how_many_training_steps=10000 \
+	--validation_percentage=20 \
+	--testing_percentage=20 \
+	--print_misclassification_test_images=True \
+	--tfhub_module="https://tfhub.dev/google/imagenet/resnet_v2_152/feature_vector/1" \
+	--saved_model_dir="saved_model_dir" \
+
+how to continue retraining 
+:qhttps://github.com/tensorflow/hub/issues/37
+
+prediction
+
+python3 prediction.py \
+--graph=test_model/final_model.pb --labels=test_model/final_label.pbtxt \
+--input_layer=Placeholder \
+--input_height=224 --input_width=224 \
+--output_layer=final_result \
+--image=images/img11.png \
+
